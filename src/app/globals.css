@@ -1,0 +1,331 @@
+@import "tailwindcss";
+
+/*
+  Pustaka Pelita design tokens
+  Palette: "Forest" family. Neutral paper with a faint green cast, green-black ink,
+  one accent (evergreen). Semantic colors (warn/danger) are used only for real states.
+  Shape rule: book covers 2px, every other surface/control 6px. No pills.
+*/
+:root {
+  --paper: #f3f4f0;
+  --paper-2: #e9ebe4;
+  --surface: #fafbf8;
+  --ink: #17211c;
+  --ink-2: #45514a;
+  --ink-3: #5f6b64;
+  --line: #d5d9d0;
+  --line-strong: #b4bbb0;
+  --accent: #1e4a37;
+  --accent-hover: #163a2b;
+  --accent-contrast: #f3f4f0;
+  --accent-soft: #dce6de;
+  --accent-ink: #1e4a37;
+  --warn: #7a5210;
+  --warn-soft: #f0e6cf;
+  --danger: #9e3428;
+  --danger-soft: #f3e0dc;
+  --shadow-rgb: 23 33 28;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0f1411;
+    --paper-2: #151c18;
+    --surface: #1a221e;
+    --ink: #e6eae4;
+    --ink-2: #b4bdb6;
+    --ink-3: #939d95;
+    --line: #2a342e;
+    --line-strong: #3d4943;
+    --accent: #8cc5a4;
+    --accent-hover: #a5d4b9;
+    --accent-contrast: #0f1411;
+    --accent-soft: #1d2e25;
+    --accent-ink: #9dd0b2;
+    --warn: #e2b866;
+    --warn-soft: #2e2615;
+    --danger: #ef9a8c;
+    --danger-soft: #34201c;
+    --shadow-rgb: 0 0 0;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-garamond), ui-serif, Georgia, serif;
+
+  --radius-ui: 6px;
+  --radius-book: 2px;
+
+  --shadow-book: 0 1px 1px rgb(var(--shadow-rgb) / 0.08), 0 14px 28px -14px rgb(var(--shadow-rgb) / 0.45);
+  --shadow-book-lift: 0 2px 2px rgb(var(--shadow-rgb) / 0.08), 0 24px 40px -18px rgb(var(--shadow-rgb) / 0.5);
+  --shadow-panel: 0 1px 2px rgb(var(--shadow-rgb) / 0.05), 0 18px 48px -24px rgb(var(--shadow-rgb) / 0.35);
+
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* z-index scale: header 30, sticky buy bar 30, dialog uses top layer, toast 50, grain 60 */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 88px;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Faint paper grain, fixed and non-interactive so it never repaints on scroll */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .font-serif {
+    font-feature-settings: "liga", "kern";
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@layer components {
+  .page-x {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .page-x {
+      padding-inline: 2rem;
+    }
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.875rem;
+    padding-inline: 1.25rem;
+    border-radius: var(--radius-ui);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.2s var(--ease-out-soft), color 0.2s var(--ease-out-soft),
+      border-color 0.2s var(--ease-out-soft), transform 0.15s var(--ease-out-soft);
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px) scale(0.99);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-sm {
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    font-size: 0.875rem;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-contrast);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-secondary:hover:not(:disabled) {
+    border-color: var(--ink);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-2);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    color: var(--ink);
+    background: var(--paper-2);
+  }
+  .btn-danger {
+    background: var(--danger);
+    color: var(--paper);
+  }
+
+  .field-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .field-help {
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+  }
+  .field-error {
+    font-size: 0.8125rem;
+    color: var(--danger);
+    font-weight: 500;
+  }
+  .input {
+    width: 100%;
+    height: 2.875rem;
+    padding-inline: 0.875rem;
+    border-radius: var(--radius-ui);
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 0.9375rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  textarea.input {
+    height: auto;
+    padding-block: 0.75rem;
+    line-height: 1.6;
+  }
+  .input::placeholder {
+    color: var(--ink-3);
+  }
+  .input:hover {
+    border-color: var(--ink-3);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .input[aria-invalid="true"] {
+    border-color: var(--danger);
+  }
+  select.input {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 256 256'%3E%3Cpath fill='%235f6b64' d='M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+  }
+
+  .link {
+    color: var(--accent-ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in oklab, var(--accent-ink) 40%, transparent);
+    transition: text-decoration-color 0.2s;
+  }
+  .link:hover {
+    text-decoration-color: var(--accent-ink);
+  }
+
+  .prose-reading {
+    font-family: var(--font-serif);
+    font-size: 1.1875rem;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+  .prose-reading p + p {
+    margin-top: 1em;
+  }
+
+  /* Native <dialog> with enter/exit transitions */
+  .sheet {
+    margin: auto;
+    border: 0;
+    padding: 0;
+    background: var(--surface);
+    color: var(--ink);
+    border-radius: var(--radius-ui);
+    box-shadow: var(--shadow-panel);
+    max-height: min(92dvh, 860px);
+    width: min(100% - 1.5rem, 34rem);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.25s var(--ease-out-soft), transform 0.25s var(--ease-out-soft),
+      overlay 0.25s allow-discrete, display 0.25s allow-discrete;
+  }
+  .sheet[open] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @starting-style {
+    .sheet[open] {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+  .sheet::backdrop {
+    background: rgb(15 20 17 / 0);
+    transition: background 0.25s, overlay 0.25s allow-discrete, display 0.25s allow-discrete;
+  }
+  .sheet[open]::backdrop {
+    background: rgb(15 20 17 / 0.5);
+  }
+  @starting-style {
+    .sheet[open]::backdrop {
+      background: rgb(15 20 17 / 0);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
